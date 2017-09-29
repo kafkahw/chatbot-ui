@@ -1,0 +1,30 @@
+.chat-app {
+  height: 70vh;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 1fr 50px;
+}
+
+.chat-output {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  overflow: scroll;
+  padding: 20px;
+  background: white;
+}
+
+.chat-input {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+}
+
+.user-input {
+  width: 100%;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+}
