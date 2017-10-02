@@ -1,4 +1,7 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# want to know why this file is needed? See here: https://stackoverflow.com/questions/24942161/does-npm-ignore-files-listed-in-gitignore#answer-24942436
+
+
+/public
 
 # dependencies
 /node_modules
@@ -8,9 +11,6 @@
 
 # production
 /build
-
-# lib will be generated automatically by 'prepare' script command.
-/lib
 
 # misc
 .DS_Store

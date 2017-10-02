@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import BotBubble from './BotBubble';
 import UserBubble from './UserBubble';
 import ErrorBoundary from './ErrorBoundary';
@@ -26,6 +26,8 @@ class ChatBox extends React.Component {
   handleSubmit(event) {
     event.stopPropagation();
     event.preventDefault();
+
+    // Update chat box with user's input.
     const input = this.state.input;
     this.setState(
       prevState => ({
@@ -33,8 +35,9 @@ class ChatBox extends React.Component {
         messages: [...prevState.messages, createMSG('user', prevState.input)],
       })
     );
-    const url = 'http://localhost:3003/organizations/1/chats';
-    fetch(url, {
+
+    // Fetch bot message and update chat box with returned message.
+    fetch(this.props.config.botServerURL, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -51,17 +54,20 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate() {
+    // Scroll the chat box to bottom after each new message is added.
     this.output.scrollTop = this.output.scrollHeight;
   }
 
   render() {
+    const { botAvatarURL, userAvatarURL } = this.props.config;
     return (
       <div className="chat-app">
         <div className="chat-output" ref={(output) => {this.output = output;}}>
           <ErrorBoundary>
             {this.state.messages.map(message => {
               const Bubble = message.type === 'bot' ? BotBubble : UserBubble;
-              return <Bubble key={`msg-${message.id}`} message={message.text} />;
+              const avatarURL = message.type === 'bot' ? botAvatarURL : userAvatarURL;
+              return <Bubble key={`msg-${message.id}`} message={message.text} avatarURL={avatarURL} />;
             })}
           </ErrorBoundary>
         </div>
@@ -81,5 +87,13 @@ class ChatBox extends React.Component {
     );
   }
 }
+
+ChatBox.propTypes = {
+  config: PropTypes.shape({
+    botServerURL: PropTypes.string.isRequired,
+    botAvatarURL: PropTypes.string,
+    userAvatarURL: PropTypes.string,
+  }).isRequired,
+};
 
 export default ChatBox;
