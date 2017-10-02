@@ -1,18 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import BotBubble from './BotBubble';
 import UserBubble from './UserBubble';
+import ErrorBoundary from './ErrorBoundary';
+import { createMSG } from '../message';
 
 import './ChatBox.css'
-
-
 
 class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       input: '',
-      messages: [{text: "Hi! I'm a bot. What's up?", user: "bot"}]
+      messages: [createMSG('bot', "Hi! I'm a bot. What's up?")],
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,13 +24,30 @@ class ChatBox extends React.Component {
   }
 
   handleSubmit(event) {
-    const message = this.state.input;
+    event.stopPropagation();
+    event.preventDefault();
+    const input = this.state.input;
     this.setState(
-      (prevState)=> ({
+      prevState => ({
         input: '',
-        messages: [...prevState.messages, {text: message, user: "user" }, {text: "I'm a dumb bot!", user: "bot"}]
+        messages: [...prevState.messages, createMSG('user', prevState.input)],
       })
     );
+    const url = 'http://localhost:3003/organizations/1/chats';
+    fetch(url, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `text=${encodeURIComponent(input)}&user_id=123`,
+    })
+    .then(response => response.json())
+    .then(json => {
+      this.setState(prevState => ({
+        messages: [...prevState.messages, createMSG('bot', json.message)]
+      }));
+    });
   }
 
   componentDidUpdate() {
@@ -40,10 +57,13 @@ class ChatBox extends React.Component {
   render() {
     return (
       <div className="chat-app">
-        <div className="chat-output" ref={(output) => { this.output = output; }}>
-          {this.state.messages.map(message => (
-            message.user === 'bot' ? <BotBubble message={message.text} /> : <UserBubble message={message.text} />
-          ))}
+        <div className="chat-output" ref={(output) => {this.output = output;}}>
+          <ErrorBoundary>
+            {this.state.messages.map(message => {
+              const Bubble = message.type === 'bot' ? BotBubble : UserBubble;
+              return <Bubble key={`msg-${message.id}`} message={message.text} />;
+            })}
+          </ErrorBoundary>
         </div>
 
         <div className="chat-input">
