@@ -1,8 +1,9 @@
 .chat-app {
   height: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: 1fr 50px;
+  grid-template-rows: 1fr 25px 50px;
 }
 
 .chat-output {
@@ -13,9 +14,14 @@
   background: white;
 }
 
-.chat-input {
+.typing-indicator {
   grid-row-start: 2;
   grid-row-end: 3;
+}
+
+.chat-input {
+  grid-row-start: 3;
+  grid-row-end: 4;
   background: #eee;
   border: 1px solid #ccc;
   border-bottom: 0;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import BotBubble from './BotBubble';
 import UserBubble from './UserBubble';
 import ErrorBoundary from './ErrorBoundary';
+import StatusBar from './StatusBar';
 import { createMSG } from '../message';
 
 import './ChatBox.css'
@@ -13,6 +14,7 @@ class ChatBox extends React.Component {
     this.state = {
       input: '',
       messages: [createMSG('bot', "Hi! I'm a bot. What's up?")],
+      isFetchingData: false,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -33,6 +35,7 @@ class ChatBox extends React.Component {
       prevState => ({
         input: '',
         messages: [...prevState.messages, createMSG('user', prevState.input)],
+        isFetchingData: true,
       })
     );
 
@@ -48,7 +51,8 @@ class ChatBox extends React.Component {
     .then(response => response.json())
     .then(json => {
       this.setState(prevState => ({
-        messages: [...prevState.messages, createMSG('bot', json.message)]
+        messages: [...prevState.messages, createMSG('bot', json.message)],
+        isFetchingData: false,
       }));
     });
   }
@@ -72,6 +76,7 @@ class ChatBox extends React.Component {
           </ErrorBoundary>
         </div>
 
+        <StatusBar isLoading={this.state.isFetchingData} />
         <div className="chat-input">
           <form id="user-input-form" onSubmit={this.handleSubmit}>
             <input
