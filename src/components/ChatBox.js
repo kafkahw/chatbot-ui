@@ -15,6 +15,7 @@ class ChatBox extends React.Component {
       input: '',
       messages: [createMSG('bot', "Hi! I'm a bot. What's up?")],
       isFetchingData: false,
+      errorOnFetch: false,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -54,6 +55,13 @@ class ChatBox extends React.Component {
         messages: [...prevState.messages, createMSG('bot', json.message)],
         isFetchingData: false,
       }));
+    })
+    .catch(error => {
+      this.setState({
+        isFetchingData: false,
+        errorOnFetch: true,
+      });
+      console.log('Fetch request failed', error);
     });
   }
 
@@ -76,7 +84,7 @@ class ChatBox extends React.Component {
           </ErrorBoundary>
         </div>
 
-        <StatusBar isLoading={this.state.isFetchingData} />
+        <StatusBar isLoading={this.state.isFetchingData} failed={this.state.errorOnFetch} />
         <div className="chat-input">
           <form id="user-input-form" onSubmit={this.handleSubmit}>
             <input
