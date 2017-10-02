@@ -5,5 +5,12 @@ import './index.css';
 import ChatBox from './components/ChatBox';
 // import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<ChatBox />, document.getElementById('root'));
+function init(domNode, config={}) {
+  ReactDOM.render(<ChatBox />, domNode);  //document.getElementById('root')
+}
 // registerServiceWorker();
+
+
+export {
+  init,
+};
