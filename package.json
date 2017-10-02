@@ -1,5 +1,5 @@
 {
-  "name": "bot-chat",
+  "name": "chatbot-ui",
   "version": "0.1.0",
   "main": "./lib/index.js",
   "private": true,
